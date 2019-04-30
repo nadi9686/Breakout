@@ -15,7 +15,7 @@
 			<form class = "register-form">
 				<input type = "text" placeholder = "username"/>
 				<input type = "password" placeholder = "password" id = "myInput1"/>
-				<input type = "checkbox" onclick = "togglePassword()"><span class="checkbox">Show password</span>
+				<input type = "checkbox" onclick = "togglePasswordOne()"><span class="checkbox">Show password</span>
 				<button>Create</button>
 				<p class = "message">Already Registered? <a href="#">Login</a></p>
 			</form>
@@ -23,7 +23,7 @@
 			<form class = "login-form">
 				<input type = "text" placeholder = "username"/>
 				<input type = "password" placeholder = "password" id = "myInput2"/>
-				<input type = "checkbox" onclick = "togglePassword()"><span class="checkbox">Show password</span>
+				<input type = "checkbox" onclick = "togglePasswordTwo()"><span class="checkbox">Show password</span>
 				<button>Login</button>
 				<p class = "message">Not Registered? <a href="#">Register</a></p>
 			</form>
@@ -39,19 +39,25 @@
 			$('form').animate({height: "toggle", opacity: "toggle"}, "slow");
 			});
 
-			function togglePassword() {
+			function togglePasswordOne() {
 				var x = document.getElementById("myInput1");
-				var y = document.getElementById("myInput2")
+
 				if(x.type === "password") {
 					x.type = "text";
 				} 
+				else {
+					x.type = "password";
+				}
+			}
+
+			function togglePasswordTwo() {
+				var y = document.getElementById("myInput2");
 
 				if(y.type === "password") {
 					y.type = "text";
 				}
 
 				else {
-					x.type = "password";
 					y.type = "password";
 				}
 			}
