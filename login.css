@@ -83,4 +83,13 @@ input[type="checkbox"] {
 	display: none;
 }
 
+a {
+	text-decoration: none;
+}
+
+a:link, a:visited {
+	color:aliceblue;
+}
+
+
 
