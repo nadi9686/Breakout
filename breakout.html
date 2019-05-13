@@ -17,6 +17,7 @@
 	    });
 
 	    var ball;
+	    var ballOnPaddle = true;
 	    var paddle;
 	    var bricks;
 		var newBrick;
@@ -28,6 +29,9 @@
 		var lifeLostText;
 		var playing = false;
 		var startButton;
+		var level=1;
+		var levelText;
+		var saveScore = 0;
 
 	    function preload() {
     		game.scale.pageAlignHorizontally = true;
@@ -44,7 +48,7 @@
 	    	game.physics.startSystem(Phaser.Physics.ARCADE);//initialize arcade physics engine
 	    	game.physics.arcade.checkCollision.down = false;//allows ball to fall through bottom will allow to lose
 	    	ball = game.add.sprite(game.world.width*0.5, game.world.height-50, 'ball');//positions ball on paddle
-	    	ball.anchor.set(0.5);
+
 	    	game.physics.enable(ball, Phaser.Physics.ARCADE);//enables our ball for physics system
 	    	ball.body.collideWorldBounds = true;
 	    	ball.body.bounce.set(1);
@@ -56,12 +60,19 @@
 	    	game.physics.enable(paddle, Phaser.Physics.ARCADE);//enable physics
 	    	paddle.body.immovable = true;
 
-	    	initBricks();
+	    	if(level == 1) {
+	    		initBricks();
+	    	}
+	    	else {
+	    		sampleLevel();
+	    	}
 
 	    	textStyle = { font: '18px Arial', fill: '#ff96a0' };
-	    	scoreText = game.add.text(5, 5, 'Points: 0', textStyle);//score
+	    	scoreText = game.add.text(5, 5, 'Points: '+score, textStyle);//score
 	    	livesText = game.add.text(game.world.width-5, 5, 'Lives: '+lives, textStyle);//adds lives to the game and where to put these lives
+	    	levelText = game.add.text(game.world.width-5, 5, 'Level: '+level, textStyle);
 			livesText.anchor.set(1,0);//anchoring lives to the top right of the screen
+			levelText.anchor.set(1,-16);
 			lifeLostText = game.add.text(game.world.width*0.5, game.world.height*0.5, 'Life lost, click to continue', textStyle);
 			lifeLostText.anchor.set(0.5);//centers lifelosttext in the middle of screen
 			lifeLostText.visible = false;
@@ -73,10 +84,14 @@
 	    function update() {
 	    	game.physics.arcade.collide(ball, paddle);//enable collision
 	    	game.physics.arcade.collide(ball, bricks, ballHitBrick);//collision for ball hitting brick
+	    	if(ballOnPaddle) {
+	    		ball.body.x = paddle.x - (ball.width / 2);
+	    	}
 	    	if(playing) {
 	    		paddle.x = game.input.x || game.world.width*0.5;//sets input position to be in middle of screen
 	    	}
 	    }
+
 
 	    function initBricks() {
 	    	    brickInfo = {
@@ -106,6 +121,39 @@
     		}
 	    }
 
+	    function sampleLevel() {
+	    	    brickInfo = {
+		        width: 50,
+		        height: 10,
+		        count: {
+		            row: 5,
+		            col: 8
+		        },
+		        offset: {
+		            top: 90,
+		            left: 80
+		        },
+		        padding: 30
+		    };
+		    bricks = game.add.group();
+	    	for(c=0; c<brickInfo.count.col; c++) {
+		        for(r=0; r<brickInfo.count.row; r++) {
+		            var brickX = (c*(brickInfo.width+brickInfo.padding))+brickInfo.offset.left;
+		            var brickY = (r*(brickInfo.height+brickInfo.padding))+brickInfo.offset.top;
+		            newBrick = game.add.sprite(brickX, brickY, 'brick');
+		            game.physics.enable(newBrick, Phaser.Physics.ARCADE);
+		            newBrick.body.immovable = true;
+		            newBrick.anchor.set(0.5);
+		            bricks.add(newBrick);
+		        }
+    		}
+	    }
+
+	    function putBallOnPaddle() {
+	    	ballOnPaddle = true;
+	    	ball.reset(paddle.body.x, paddle.body.y - paddle.body.height);
+	    }
+
 	    function ballHitBrick(ball, brick) {
 
 		    var killTween = game.add.tween(brick.scale);
@@ -118,20 +166,34 @@
 
 		    score += 10;
 		    scoreText.setText('Points: '+score);
-		    if(score === brickInfo.count.row*brickInfo.count.col*10) {
-		        alert('You won the game, congratulations!');
-		        location.reload();
+		    if(score === brickInfo.count.row*brickInfo.count.col*10 + saveScore) {
+		    	if(level==2 && (score === brickInfo.count.row*brickInfo.count.col*10)+saveScore) {
+		    		alert('You won the game, congratulations!');
+		    		location.reload();
+		    	}
+		    	saveScore = score;
+		    	level = level + 1;
+		    	console.log(level);
+		    	paddle.kill();
+		    	ball.kill();
+		    	scoreText.destroy();
+		    	livesText.destroy();
+		    	levelText.destroy();
+		    	ballOnPaddle = true;
+		    	create();
 		    }
 	    }
 
 	    function ballLeaveScreen() {
 		    lives=lives-1;
+		    ballOnPaddle = true;
 		    if(lives) {
 		        livesText.setText('Lives: '+lives);
 		        lifeLostText.visible = true;
-		        ball.reset(game.world.width*0.5, game.world.height-25);
+		        ball.reset(game.world.width*0.5, game.world.height-55);
 		        paddle.reset(game.world.width*0.5, game.world.height-5);
 		        game.input.onDown.addOnce(function(){
+		        	ballOnPaddle = false;
 		            lifeLostText.visible = false;
 		            ball.body.velocity.set(150, -150);
 		        }, this);
@@ -151,7 +213,10 @@
 		    startButton.destroy();
 		    ball.body.velocity.set(150, -150);
 		    playing = true;
+		    ballOnPaddle = false;
 		}
+		
+
 
 	</script>
 
