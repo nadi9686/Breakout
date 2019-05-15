@@ -38,9 +38,78 @@ header img {
 	margin-left: 40px;
 }
 
+.SBox {
+	margin: 10px;
+	width: 150px;
+	padding: 5px 35px 5px 5px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	height: 34px;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	background: url(icon.png) 96% / 15% no-repeat #eee;
+}
+
 .avatar {
   vertical-align: middle;
-  width: 50px;
-  height: 50px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
 }
+
+
+  
+form, p, span {
+    margin:0;
+    padding:0; }
+  
+input { font:12px arial; }
+  
+
+  
+#wrapper, #loginform {
+	font:12px arial;
+	text-align:center;
+	position: fixed;
+	bottom: 0;
+	right: 0;
+    margin:0 auto;
+    padding-bottom:25px;
+    background:#EBF4FB;
+    width:200px;
+    border:1px solid #ACD8F0;
+
+}
+
+  
+#loginform { padding-top:18px; }
+  
+    #loginform p { margin: 5px; }
+  
+#chatbox {
+    text-align:left;
+    margin:0 auto;
+    margin-bottom:25px;
+    padding:10px;
+    background:#fff;
+    height:270px;
+    width:150px;
+    border:1px solid #ACD8F0;
+    overflow:auto; }
+  
+#usermsg {
+    width:120px;
+    border:1px solid #ACD8F0; }
+  
+#submit { width: 60px; }
+  
+.error { color: #ff0000; }
+  
+#menu { padding:12.5px 25px 12.5px 25px; }
+  
+.welcome { float:left; }
+  
+.logout { float:right; }
+  
+.msgln { margin:0 0 2px 0; }
