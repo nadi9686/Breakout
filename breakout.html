@@ -7,13 +7,42 @@
 	    <title>Gamedev Phaser Workshop - lesson 01: Initialize the framework</title>
 	    <link rel="stylesheet" href="breakout.css">
 	    <script src="js/phaser.min.js"></script>
+
+
+
 	</head>
 
 	<body>
-		
+
+
 		<header>
 
-			<img onclick = "myFunction()" src = "avatars/avatar1.png" alt="Avatar" class="avatar">
+			<div id = "imgContent">
+			
+				<img id = "mainImage" src = "avatars/avatar1.png" alt="Avatar1" onclick="document.getElementById('SBox').style.display='block'" class = "avatar">
+
+				<select class = "SBox" onchange="changeImg(this.value)" >
+					<option value = ''>Choose</option>
+					<option value = 'avatars/avatar1.png' alt='Avatar1'>Avatar 1</option>
+					<option value = 'avatars/avatar2.png' alt='Avatar2'>Avatar 2</option>
+					<option value = 'avatars/avatar3.png' alt='Avatar3'>Avatar 3</option>
+					<option value = 'avatars/avatar4.jpg' alt='Avatar4'>Avatar 4</option>
+					<option value = 'avatars/avatar5.png' alt='Avatar5'>Avatar 5</option>
+					<option value = 'avatars/avatar6.jpg' alt='Avatar6'>Avatar 6</option>
+					<option value = 'avatars/avatar7.png' alt='Avatar7'>Avatar 7</option>
+					<option value = 'avatars/avatar8.jpg' alt='Avatar8'>Avatar 8</option>
+					<option value = 'avatars/avatar9.png' alt='Avatar9'>Avatar 9</option>
+					<option value = 'avatars/avatar10.jpg' alt='Avatar10'>Avatar 10</option>
+					<option value = 'avatars/avatar11.png' alt='Avatar11'>Avatar 11</option>
+					<option value = 'avatars/avatar12.png' alt='Avatar12'>Avatar 12</option>
+					<option value = 'avatars/avatar13.png' alt='Avatar13'>Avatar 13</option>
+					<option value = 'avatars/avatar14.png' alt='Avatar14'>Avatar 14</option>
+					<option value = 'avatars/avatar15.jpg' alt='Avatar15'>Avatar 15</option>
+					<option value = 'avatars/avatar16.png' alt='Avatar16'>Avatar 16</option>
+				</select>
+
+			</div>
+
 
 			<nav>
 				<ul>
@@ -24,7 +53,24 @@
 			</nav>
 
 		</header>
-		
+
+		<div id="wrapper">
+		    <div id="menu">
+		        <p class="welcome">Welcome, <b></b></p>
+		        <p class="logout"><a id="exit" href="#">Exit Chat</a></p>
+		        <div style="clear:both"></div>
+		    </div>
+		     
+		    <div id="chatbox"></div>
+		     
+		    <form name="message" action="">
+		        <input name="usermsg" type="text" id="usermsg" size="63" />
+		        <input name="submitmsg" type="submit"  id="submitmsg" value="Send" />
+		    </form>
+		</div>
+
+
+
 	<script>
 
 	    var game = new Phaser.Game(700, 475, Phaser.CANVAS, null, {
@@ -47,6 +93,8 @@
 		var level=1;
 		var levelText;
 		var saveScore = 0;
+		var me = this;
+		var finalTime;
 
 	    function preload() {
     		game.scale.pageAlignHorizontally = true;
@@ -66,7 +114,11 @@
 
 	    	game.physics.enable(ball, Phaser.Physics.ARCADE);//enables our ball for physics system
 	    	ball.body.collideWorldBounds = true;
-	    	ball.body.bounce.set(1);
+	    	if(level==1) {
+	    		ball.body.bounce.set(1);
+	    	} else {
+	    		ball.body.bounce.set(1.05);
+	    	}
 	    	ball.checkWorldBounds = true;
 			ball.events.onOutOfBounds.add(ballLeaveScreen, this);
 
@@ -75,8 +127,18 @@
 	    	game.physics.enable(paddle, Phaser.Physics.ARCADE);//enable physics
 	    	paddle.body.immovable = true;
 
+	    	
+
+			
 	    	if(level == 1) {
 	    		initBricks();
+	    		me.startTime = new Date();
+				me.totalTime = 120;
+				me.timeElapsed = 0;
+	    		me.gameTimer = game.time.events.loop(100, function(){
+					me.updateTimer();
+				});
+				me.createTimer();
 	    	}
 	    	else {
 	    		sampleLevel();
@@ -113,8 +175,8 @@
 		        width: 50,
 		        height: 10,
 		        count: {
-		            row: 3,
-		            col: 7
+		            row: 1,
+		            col: 1
 		        },
 		        offset: {
 		            top: 90,
@@ -181,9 +243,13 @@
 
 		    score += 10;
 		    scoreText.setText('Points: '+score);
+		    console.log("saveScore = "+saveScore);
 		    if(score === brickInfo.count.row*brickInfo.count.col*10 + saveScore) {
-		    	if(level==2 && (score === brickInfo.count.row*brickInfo.count.col*10)+saveScore) {
+		    	console.log("score = "+score);
+		    	console.log("brick calc = "+(brickInfo.count.row*brickInfo.count.col*10)+saveScore);
+		    	if(level==2 && (score === (brickInfo.count.row*brickInfo.count.col*10)+saveScore)) {
 		    		alert('You won the game, congratulations!');
+		    		console.log(finalTime);
 		    		location.reload();
 		    	}
 		    	saveScore = score;
@@ -215,7 +281,8 @@
 		    }
 		    else {
 		        alert('You lost, game over!');
-		        location.reload();
+		        console.log(finalTime);
+		        location.reload();     
 		    }
 		}
 
@@ -230,7 +297,44 @@
 		    playing = true;
 		    ballOnPaddle = false;
 		}
-		
+
+
+		function createTimer() {
+			var me = this;
+
+	        me.timeLabel = me.game.add.text(me.game.world.centerX, 100, "00:00", {font: "25px Arial", fill: "#fff"});
+	        me.timeLabel.anchor.setTo(5.5, -9.7);
+	        me.timeLabel.align = 'center';
+		}
+
+		function updateTimer() {
+			var me = this;
+
+	        var currentTime = new Date();
+	        var timeDifference = me.startTime.getTime() - currentTime.getTime();
+
+	        //Time elapsed in seconds
+	        me.timeElapsed = Math.abs(timeDifference / 1000);
+
+	        //Convert seconds into minutes and seconds
+	        var minutes = Math.floor(me.timeElapsed / 60);
+	        var seconds = Math.floor(me.timeElapsed) - (60 * minutes);
+
+	        //Display minutes, add a 0 to the start if less than 10
+	        var result = (minutes < 10) ? "0" + minutes : minutes; 
+
+	        //Display seconds, add a 0 to the start if less than 10
+	        result += (seconds < 10) ? ":0" + seconds : ":" + seconds; 
+
+	        me.timeLabel.text = result;
+	        finalTime = minutes + seconds;
+		}
+
+		function changeImg(info) {
+		  if (info == '') { return; }
+		  document.getElementById('mainImage').src = info;
+		  document.getElementById('SBox').style.display = 'none';
+		}		
 
 
 	</script>
