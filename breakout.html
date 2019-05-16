@@ -54,19 +54,22 @@
 
 		</header>
 
-		<div id="wrapper">
-		    <div id="menu">
-		        <p class="welcome">Welcome, <b></b></p>
-		        <p class="logout"><a id="exit" href="#">Exit Chat</a></p>
-		        <div style="clear:both"></div>
-		    </div>
-		     
+		<button class="open-button" onclick="openForm()">Breakout Chatroom</button>
+
+		<div class="chat-popup" id="myForm">
+		  <form class="form-container">
+		  	<img src = "icon.png" class = "chatIcon">
+		    <h1>Breakout Chat</h1>
+
+
 		    <div id="chatbox"></div>
-		     
-		    <form name="message" action="">
-		        <input name="usermsg" type="text" id="usermsg" size="63" />
-		        <input name="submitmsg" type="submit"  id="submitmsg" value="Send" />
-		    </form>
+
+		    <label for="msg"><b>Message</b></label>
+		    <textarea placeholder="Type message.." name="msg" required></textarea>
+
+		    <button type="submit" class="btn">Send</button>
+		    <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+		  </form>
 		</div>
 
 
@@ -335,6 +338,14 @@
 		  document.getElementById('mainImage').src = info;
 		  document.getElementById('SBox').style.display = 'none';
 		}		
+
+		function openForm() {
+		  document.getElementById("myForm").style.display = "block";
+		}
+
+		function closeForm() {
+		  document.getElementById("myForm").style.display = "none";
+		}
 
 
 	</script>
