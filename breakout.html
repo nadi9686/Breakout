@@ -54,6 +54,7 @@
 
 		</header>
 
+
 		<button class="open-button" onclick="openForm()">Breakout Chatroom</button>
 
 		<div class="chat-popup" id="myForm">
@@ -107,9 +108,12 @@
     		game.load.image('paddle', 'paddle.png');
     		game.load.image('brick', 'money.png');
     		game.load.spritesheet('button', 'button.png', 120, 40);
+    		game.load.image('background', 'moving.png');
 	    }
 
 	    function create() {
+	    	this.tileSprite = game.add.tileSprite(0,0,700,475,'background');
+	    	this.tileSprite.autoScroll(-100,0);
 	    	game.stage.backgroundColor = "#4488AA";
 	    	game.physics.startSystem(Phaser.Physics.ARCADE);//initialize arcade physics engine
 	    	game.physics.arcade.checkCollision.down = false;//allows ball to fall through bottom will allow to lose
